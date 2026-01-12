@@ -1,9 +1,20 @@
 import React from 'react'
 
-const Card = (props) => {
+const Card = ({children}) => {
   return (
-    <div className='mr-5 bg-white text-black inline-block p-6 text-center rounder-br'>
-       <h2>Hello</h2>
+    <div className="
+bg-emerald-900/90 
+relative z-10
+backdrop-blur-md
+border border-emerald-700/40
+rounded-2xl
+p-10
+w-[420px]
+shadow-[0_20px_50px_rgba(16,185,129,0.25)]
+">
+
+
+       {children}
     </div>
   )
 }
