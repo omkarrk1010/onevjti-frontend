@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
+import api from "../api/axios";
+
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -14,38 +16,42 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name) return setError("Enter your name");
-    if (!username) return setError("Enter your username");
-    if (!email) return setError("Enter your email");
-    if (!department) return setError("Enter your department");
-    if (!year) return setError("Enter your year");
-    if (!password) return setError("Enter your password");
+    if (!name || !username || !email || !department || !year || !password) {
+    return setError("All fields are required");
+   }
+
+
+   try {
+    const res = await api.post("/users/register", {
+      fullName: name,
+      username,
+      email,
+      department,
+      year,
+      password,
+    });
 
     setError("");
     setSuccess(true);
+  } catch (err) {
+    setError(
+      err.response?.data?.message || "Registration failed"
+    );
+  }
 
     // 🔗 API call goes here later
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black overflow-hidden">
-
-      {/* Glow */}
-      <div
-        className="
-          absolute inset-0 m-auto
-          w-[500px] h-[500px]
-          bg-emerald-500/15
-          blur-3xl
-          rounded-full
-        "
-      />
+    <div className="min-h-screen bg-gradient-to-br flex items-center justify-center overflow-hidden">
+    
+    <div className="absolute w-[500px] h-[500px] blur-3xl rounded-full" />
 
       <Card>
-        <h1 className="text-3xl font-bold text-emerald-200 text-center mb-8 tracking-wide">
+        <h1 className="text-3xl font-bold text-purple-400 text-center mb-8 tracking-wide">
           User Registration
         </h1>
 
@@ -68,21 +74,20 @@ const Register = () => {
             <button
               type="submit"
               className="
-                w-full mt-2 py-3 rounded-xl
-                bg-black text-emerald-400 font-semibold
-                border border-emerald-600
-                hover:bg-emerald-600 hover:text-black
-                hover:shadow-[0_10px_30px_rgba(16,185,129,0.5)]
-                active:scale-95
-                transition-all
-              "
+            w-full mt-2 py-3 rounded-xl
+            bg-purple-400 text-white font-semibold
+            border
+            hover:bg-purple-300 hover:text-white
+            active:scale-95
+            transition-all
+          "
             >
               Register
             </button>
 
             <Link
               to="/users/login"
-              className="block text-center text-emerald-400 hover:underline"
+              className="block text-center text-purple-300 hover:underline"
             >
               Already have an account? Log in
             </Link>
@@ -90,7 +95,7 @@ const Register = () => {
         ) : (
           /* ✅ SUCCESS STATE */
           <div className="text-center space-y-6">
-            <p className="text-emerald-400 text-lg font-semibold">
+            <p className="text-purple-400 text-lg font-semibold">
               🎉 Registration successful!
             </p>
 
@@ -98,8 +103,8 @@ const Register = () => {
               onClick={() => navigate("/users/login")}
               className="
                 w-full py-3 rounded-xl
-                bg-emerald-600 text-black font-semibold
-                hover:bg-emerald-500
+                bg-purple-600 text-black font-semibold
+                hover:bg-purple-500
                 hover:shadow-[0_10px_30px_rgba(16,185,129,0.5)]
                 active:scale-95
                 transition-all

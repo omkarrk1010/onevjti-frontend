@@ -1,47 +1,46 @@
 import React, { useState } from "react";
 import Card from "../components/Card";
 import { useNavigate } from "react-router-dom";
+import api from '../api/axios';
 
 const ForgotPass = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [email, setEmail ] = useState("")
   const [success,setSuccess] = useState(false)
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!newPassword || !confirmPassword) {
-      setError("Both fields are required");
-      return;
-    }
+  if (!email || !newPassword || !confirmPassword) {
+    return setError("All fields are required");
+  }
 
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+  if (newPassword !== confirmPassword) {
+    return setError("Passwords do not match");
+  }
 
-   
+  try {
+    await api.post("/users/change-password", {
+      email,
+      password: newPassword,
+    });
+
     setError("");
-    setSuccess(true)
+    setSuccess(true);
+  } catch (err) {
+    setError(err.response?.data?.message || "Password reset failed");
+  }
+};
 
-  };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black overflow-hidden">
-
-      <div
-        className="
-          absolute inset-0 m-auto
-          w-[500px] h-[500px]
-          bg-emerald-500/15
-          blur-3xl
-          rounded-full
-        "
-      />
-
+    <div className="fixed inset-0 bg-gradient-to-br from-black via-zinc-900 to-black flex items-center justify-center overflow-hidden">
+    
+    <div className="absolute w-[500px] h-[500px] bg-emerald-500/15 blur-3xl rounded-full" />
       <Card>
         <h1 className="text-3xl font-bold text-emerald-200 text-center mb-8 tracking-wide">
           Change password
@@ -50,6 +49,14 @@ const ForgotPass = () => {
         
          {!success?(
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-zinc-50 shadow-inner"
+          />
 
           <input
             type="password"
