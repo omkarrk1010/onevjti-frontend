@@ -30,7 +30,7 @@ const Login = () => {
     // store token
 localStorage.setItem("accessToken", res.data.data.accessToken);
 
-    navigate("/"); // or dashboard
+    navigate("/users/dashboard"); // or dashboard
   } catch (err) {
     setError(err.response?.data?.message || "Login failed");
   }
@@ -58,9 +58,9 @@ localStorage.setItem("accessToken", res.data.data.accessToken);
             <p className="text-red-500 text-sm text-center">{error}</p>
           )}
             <div className='text-right'>
-              <Link to='/users/forgotpass' className=' text-purple-300 hover:underline '>Forgot password?</Link>
+              {/* <Link to='/users/change-password' className=' text-purple-300 hover:underline '>change password?</Link> */}
               </div>
-            <button className="
+            <button  className="
             w-full mt-2 py-3 rounded-xl
             bg-purple-400 text-white font-semibold
             border

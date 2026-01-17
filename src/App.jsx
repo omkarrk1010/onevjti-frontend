@@ -11,6 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import Home from './pages/Home'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import ChangePassword from './pages/ChangePassword'
+import ProtectedRoute from './components/ProtectedRoute'
 
 
 
@@ -28,6 +30,11 @@ const App= ()=>{
         <Route path='/users/dashboard' element={<Dashboard />}/>
         <Route path='/users/register' element={<Register/>}/>
         <Route path='/users/login' element={<Login/>}/>
+        <Route path='/users/change-password' element={
+          <ProtectedRoute>
+            <ChangePassword/>
+          </ProtectedRoute>
+          }/>
         {/* <Route path='/users/forgotpass' element={<ForgotPass/>}/> */}
 
       </Routes>

@@ -28,15 +28,15 @@ const Home = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-emerald-400">
+      <div className="min-h-screen flex items-center justify-center ">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black">
-      <h1 className="text-4xl font-bold text-emerald-400">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br ">
+      <h1 className="text-4xl font-bold text-purple-400">
         Welcome, {user.fullName} 👋
       </h1>
     </div>
