@@ -13,6 +13,8 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import ChangePassword from './pages/ChangePassword'
 import ProtectedRoute from './components/ProtectedRoute'
+import Profile from './pages/Profile'
+
 
 
 
@@ -27,7 +29,8 @@ const App= ()=>{
 
       <Routes>
         <Route path='/' element={<Home />}/>
-        <Route path='/users/dashboard' element={<Dashboard />}/>
+        <Route path='/users/dashboard' element={
+          <Dashboard />}/>
         <Route path='/users/register' element={<Register/>}/>
         <Route path='/users/login' element={<Login/>}/>
         <Route path='/users/change-password' element={
@@ -35,6 +38,12 @@ const App= ()=>{
             <ChangePassword/>
           </ProtectedRoute>
           }/>
+
+          <Route path="/users/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
         {/* <Route path='/users/forgotpass' element={<ForgotPass/>}/> */}
 
       </Routes>

@@ -3,7 +3,7 @@ import Card from '../components/Card'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import api from "../api/axios";
-
+import { useAuth } from "../context/AuthContext";
 
 
 const Login = () => {
@@ -13,6 +13,7 @@ const Login = () => {
   const [password, setPassword] = useState("")
   const navigate = useNavigate();
   const [error,setError] = useState("")
+  const { setUser } = useAuth();
 
   const handleSubmit = async(e) => {
     e.preventDefault()
@@ -29,8 +30,9 @@ const Login = () => {
 
     // store token
 localStorage.setItem("accessToken", res.data.data.accessToken);
+setUser(res.data.data.user);
 
-    navigate("/users/dashboard"); // or dashboard
+    navigate("/dashboard"); // or dashboard
   } catch (err) {
     setError(err.response?.data?.message || "Login failed");
   }

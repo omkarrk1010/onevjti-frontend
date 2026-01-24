@@ -1,41 +1,24 @@
-import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
+import { useState } from "react";
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { user, setUser, loading } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  // Check auth on mount (and on refresh)
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        await api.get("/users/current-user"); // getCurrentUser
-        setIsLoggedIn(true);
-      } catch {
-        setIsLoggedIn(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
 
   const handleLogout = async () => {
     try {
-      await api.post("/users/logout"); // backend cleanup
-    } catch {
-      // even if backend fails, frontend logout must proceed
-    }
+      await api.post("/users/logout");
+    } catch {}
 
-    localStorage.removeItem("accessToken");
-    setIsLoggedIn(false);
-    navigate("/users/login");
+    setUser(null);
+    setMenuOpen(false);
+    localStorage.removeItem("accessToken")
+    navigate("/");
   };
 
-  // Prevent flicker while auth is being checked
   if (loading) return null;
 
   return (
@@ -43,40 +26,48 @@ const Header = () => {
       <h1 className="text-xl font-bold">OneVJTI</h1>
 
       <nav className="flex gap-8 text-lg font-medium">
-        <Link to="/" className="hover:text-purple-500">
-          Home
-        </Link>
-
-        {!isLoggedIn ? (
+        {!user ? (
           <>
-            <Link
-              to="/users/register"
-              className="hover:text-purple-500"
-            >
-              Register
-            </Link>
-            <Link
-              to="/users/login"
-              className="hover:text-purple-500"
-            >
-              Login
-            </Link>
+            <Link to="/users/register">Register</Link>
+            <Link to="/users/login">Login</Link>
           </>
         ) : (
-          <>
-            <Link
-              to="/users/change-password"
-              className="hover:text-purple-500"
-            >
-              Change Password
-            </Link>
+          <div className="relative">
             <button
-              onClick={handleLogout}
-              className="hover:text-red-500 transition"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex flex-col gap-1.5 p-2"
             >
-              Logout
+              <span className="w-6 h-0.5 bg-black" />
+              <span className="w-6 h-0.5 bg-black" />
+              <span className="w-6 h-0.5 bg-black" />
             </button>
-          </>
+
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg">
+                <div className="px-4 py-3 border-b">
+                  <p className="font-semibold">{user.fullName}</p>
+                  <p className="text-sm text-gray-500">{user.email}</p>
+                </div>
+
+                <button onClick={() => navigate("/users/profile")}
+                  className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition rounded-md">
+                  Profile
+                </button>
+
+                <button onClick={() => navigate("/users/change-password")}
+                  className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition rounded-md">
+                  Change Password
+                </button>
+
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-2 text-sm font-medium text-red-500 hover:bg-gray-100 hover:text-gray-900 transition rounded-md"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </nav>
     </header>
